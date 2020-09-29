@@ -9,7 +9,7 @@ library(magrittr)
 library(knitr)
 library(kableExtra)
 library(reticulate)
-reticulate::use_python("usr/local/anaconda3/bin")
+reticulate::use_python("~/miniconda/bin")
 ```
 ```{python pysetup, include=FALSE}
 # import needed packages, these stay imported in future chunks
