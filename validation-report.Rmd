@@ -1,0 +1,159 @@
+---
+title: "Validation Report"
+output: pdf_document
+---
+```{r rsetup, include=FALSE}
+library(tidyverse)
+library(magrittr)
+library(knitr)
+library(kableExtra)
+library(reticulate)
+reticulate::use_python("usr/local/anaconda3/bin")
+```
+```{python pysetup, include=FALSE}
+# import needed packages, these stay imported in future chunks
+import os
+import re
+import pandas as pd
+```
+```{r usercheck, include=FALSE}
+currentdate <- format(Sys.time(), "%Y-%m-%d")
+currenttime <- format(Sys.time(), "%H:%M:%S")
+currentuser <- Sys.getenv("USER")
+```
+This report was run by user **`r currentuser`** on **`r currentdate`** at **`r currenttime`**
+
+# Report Synopsis
+This is a validation report for the CDISC Replication Pilot Project.  The directory of the project is laid out as seen below.  These folders are where the different files for this project are held.  In addition, there are checks in place for the files used in the project to check consistency and completeness.
+
+```{python directorychecks, echo=FALSE}
+# set up directory and file paths
+wd = os.getcwd()
+progdir = os.path.join(wd, "programs")
+outputdir = os.path.join(wd, "outputs")
+metadir = os.path.join(wd, "metadata")
+# get contents of desired directories
+proglist = os.listdir(progdir)
+ouputlist = os.listdir(outputdir)
+```
+
+# Directory Outline
+The metadata files are located in the following folder:  
+**`r py$metadir`**
+
+The program files are located in the following folder:  
+**`r py$progdir`**
+
+The output files are located in the following folder:  
+**`r py$outputdir`**
+<!-- end breakout one -->
+
+# File Checks
+```{python filechecks, echo=FALSE}
+# get metadata file
+metacsv = os.path.join(metadir,"metadata.csv")
+metadf = pd.read_csv(metacsv)
+# iterate through the metadata dataframe
+for index, row in metadf.iterrows():
+   # check to see if program exists
+   program = os.path.join(progdir, row.ProgramName) 
+   programexist = os.path.exists(program)
+   # check to see if output exists
+   output = os.path.join(outputdir, row.OutputName)
+   outputexist = os.path.exists(output)
+   # assign variables created to columns in the dataframe
+   metadf.at[index, 'ProgramExists'] = programexist
+   metadf.at[index, 'OutputExists'] = outputexist
+   
+   
+# create lists of programs and outputs in the respective directory but not in the metadata file
+progsindirnotmeta = [file for file in proglist if file not in metadf.ProgramName.tolist() and re.search(".R", file)]   
+outputsindirnotmeta = [file for file in ouputlist if file not in metadf.OutputName.tolist() and re.search(".rtf", file)]
+
+# create boolean to trigger text output for programs not in directory check
+programsallgood = (len(metadf['ProgramExists'].unique().tolist()) == 1 and metadf['ProgramExists'].unique().tolist() == [True])
+# create boolean to trigger text output for outputs not in directory check
+outputsallgood = (len(metadf['OutputExists'].unique().tolist()) == 1 and metadf['OutputExists'].unique().tolist() == [True])
+# create boolean to trigger text output for programs not in metadata check
+programsmetaallgood = (len(progsindirnotmeta) == 0)
+# create boolean to trigger text output for outputs not in metadata check
+outputsmetaallgood = (len(outputsindirnotmeta) == 0)
+```
+<!-- breakout two -->
+
+## Program File Check
+The programs in the metadata document were checked against the programs folder, results are as follows:  
+`r if(py$programsallgood){"**All programs present in the metadata document are present in the programs folder.**"}`
+`r if(!py$programsallgood){"**Some programs present in the metadata document are not present in the programs folder.**  The programs listed below are not present in the programs folder."}`
+```{r badprograms, echo=FALSE, eval=!py$programsallgood, results='asis'}
+kable(select(filter(py$metadf, ProgramExists != T), ProgramName), booktabs = T) %>%
+   kable_styling(latex_options = "striped", position = "left")
+```  
+
+`r if(py$programsmetaallgood){"**All programs present in the programs folder are present in the metadata document.**"}`
+`r if(!py$programsmetaallgood){"**Some programs present in the programs folder are not present in the metadata document.**  The programs listed below are not present in the metadata document."}`
+```{r badprogrammeta, echo=FALSE, eval=!py$programsmetaallgood, results='asis'}
+kable(py$progsindirnotmeta, col.names="ProgramName", booktabs = T) %>%
+   kable_styling(latex_options = "striped", position = "left")
+```
+
+## Output File Check
+The output files in the metadata document were checked against the outputs folder, results are as follows:  
+
+`r if(py$outputsallgood){"**All outputs present in the metadata document are present in the outputs folder.**"}`
+`r if(!py$outputsallgood){"**Some outputs present in the metadata document are not present in the outputs folder.**  The outputs listed below are not present in the outputs folder."}`
+```{r badoutputs, echo=FALSE, eval=!py$outputsallgood, results='asis'}
+kable(select(filter(py$metadf, OutputExists != T), OutputName), booktabs = T) %>%
+   kable_styling(latex_options = "striped", position = "left")
+```  
+
+`r if(py$outputsmetaallgood){"**All outputs present in the outputs folder are present in the metadata document.**"}`
+`r if(!py$outputsmetaallgood){"**Some outputs present in the outputs folder are not present in the metadata document.**  The outputs listed below are not present in the metadata document."}`
+```{r badoutputmeta, echo=FALSE, eval=!py$outputsmetaallgood, results='asis'}
+kable(py$outputsindirnotmeta, col.names="OutputName", booktabs = T) %>%
+   kable_styling(latex_options = "striped", position = "left")
+```
+<!-- breakout three -->
+
+# Output Contents Checks
+The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
+```{python outputchecks, echo=FALSE}
+# iterate through the metadata dataframe
+for index, row in metadf.iterrows():
+   output = os.path.join(outputdir, row.OutputName)
+      
+   # check the output files for title and source elements and create boolean variables
+   title = row.OutputTitle
+   source = "programs/" + row.ProgramName
+   if row.OutputExists == True:
+      with open(output, 'r') as file:
+         filetext = str(file.read())
+         if  re.search(source, filetext):
+            sourcecheck = True
+         else:
+            sourcecheck = False
+   # else loop to informatively fill in variables for when the output file doesn't exist
+   else:
+      sourcecheck = "Output does not exist"
+      
+   # assign variables created to columns in the dataframe
+   metadf.at[index, 'SourceCorrect'] = sourcecheck
+```
+## Sources  
+```{r sourcelogical, echo=FALSE}
+# dataframe of all output files both in metadata and directory
+goodoutput = filter(py$metadf, OutputExists == TRUE)
+# create boolean to trigger text output for output source check
+if (length(unique(goodoutput$SourceCorrect)) == 1 & unique(goodoutput$SourceCorrect)[[1]] == T) {
+   sourcesallgood <- T
+} else {
+   sourcesallgood <- F
+}
+```
+`r if(sourcesallgood){"**All sources in the outputs match those in the metadata document.**"}`
+`r if(!sourcesallgood){"**Some sources in the outputs do not match those in the metadata document.**  The outputs and sources listed below do not match the values in the metadata document."}`
+```{r badsources, echo=FALSE, eval=!sourcesallgood, results='asis'}
+kable(select(filter(goodoutput, SourceCorrect != T), OutputName, ProgramName), booktabs = T) %>%
+   kable_styling(latex_options = "striped", position = "left")
+``` 
+<!-- breakout four -->
