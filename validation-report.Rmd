@@ -3,6 +3,7 @@ title: "Validation Report"
 output: pdf_document
 ---
 ```{r rsetup, include=FALSE}
+# import needed packages, these stay imported in future chunks
 library(tidyverse)
 library(magrittr)
 library(knitr)
@@ -46,7 +47,7 @@ The program files are located in the following folder:
 
 The output files are located in the following folder:  
 **`r py$outputdir`**
-<!-- end breakout one -->
+<!-- breakout one -->
 
 # File Checks
 ```{python filechecks, echo=FALSE}
@@ -117,7 +118,7 @@ kable(py$outputsindirnotmeta, col.names="OutputName", booktabs = T) %>%
 
 # Output Contents Checks
 The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
-```{python outputchecks, echo=FALSE}
+```{python outputsourcecheck, echo=FALSE}
 # iterate through the metadata dataframe
 for index, row in metadf.iterrows():
    output = os.path.join(outputdir, row.OutputName)
@@ -138,22 +139,17 @@ for index, row in metadf.iterrows():
       
    # assign variables created to columns in the dataframe
    metadf.at[index, 'SourceCorrect'] = sourcecheck
-```
-## Sources  
-```{r sourcelogical, echo=FALSE}
+   
 # dataframe of all output files both in metadata and directory
-goodoutput = filter(py$metadf, OutputExists == TRUE)
+goodoutput = metadf[metadf.OutputExists == True]
 # create boolean to trigger text output for output source check
-if (length(unique(goodoutput$SourceCorrect)) == 1 & unique(goodoutput$SourceCorrect)[[1]] == T) {
-   sourcesallgood <- T
-} else {
-   sourcesallgood <- F
-}
+sourcesallgood = (len(metadf['SourceCorrect'].unique().tolist()) == 1 and metadf['SourceCorrect'].unique().tolist() == [True])
 ```
-`r if(sourcesallgood){"**All sources in the outputs match those in the metadata document.**"}`
-`r if(!sourcesallgood){"**Some sources in the outputs do not match those in the metadata document.**  The outputs and sources listed below do not match the values in the metadata document."}`
-```{r badsources, echo=FALSE, eval=!sourcesallgood, results='asis'}
-kable(select(filter(goodoutput, SourceCorrect != T), OutputName, ProgramName), booktabs = T) %>%
+## Sources
+`r if(py$sourcesallgood){"**All sources in the outputs match those in the metadata document.**"}`
+`r if(!py$sourcesallgood){"**Some sources in the outputs do not match those in the metadata document.**  The outputs and sources listed below do not match the values in the metadata document."}`
+```{r badsources, echo=FALSE, eval=!py$sourcesallgood, results='asis'}
+kable(select(filter(py$goodoutput, SourceCorrect != T), OutputName, ProgramName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
 ``` 
 <!-- breakout four -->
