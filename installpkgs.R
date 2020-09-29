@@ -1,0 +1,8 @@
+install.packages('rmarkdown')
+install.packages('Rcpp')
+install.packages('rprojroot')
+install.packages('tidyverse')
+install.packages('magrittr')
+install.packages('knitr')
+install.packages('kableExtra')
+install.packages('reticulate')
