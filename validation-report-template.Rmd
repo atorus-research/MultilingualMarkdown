@@ -2,29 +2,37 @@
 title: "Validation Report"
 output: pdf_document
 ---
-<!-- begin breakout one -->
 ```{r rsetup, include=FALSE}
 # import needed R packages, these stay imported in future chunks
-
+library(tidyverse)
+library(magrittr)
+library(knitr)
+library(kableExtra)
+library(reticulate)
 # set up Python for reticulate
-
+reticulate::use_python("~/miniconda/bin")
 ```
 ```{python pysetup, include=FALSE}
 # import needed python packages, these stay imported in future chunks
+import os
+import re
+import pandas as pd
+```
+
+<!-- begin breakout one -->
+```{r usercheck}
+# get system information (user, date, time)
 
 ```
-```{r usercheck, include=FALSE}
-# get system information
-
-```
-This report was run by user **`r currentuser`** on **`r currentdate`** at **`r currenttime`**
+This report was run by user  on  at 
 
 # Report Synopsis
 This is a validation report for the CDISC Replication Pilot Project.  The directory of the project is laid out as seen below.  These folders are where the different files for this project are held.  In addition, there are checks in place for the files used in the project to check consistency and completeness.
 
 ```{python directorychecks}
-# set up directory and file paths
+# get current working directory
 
+# create paths to the subdirectories containing programs, outputs, and metadata 
 
 ```
 
@@ -42,40 +50,51 @@ The output files are located in the following folder:
 <!-- begin breakout two -->
 # File Checks
 ```{python filechecks}
-# get contents of desired directories
+# get contents of programs and outputs subdirectories
 
-# get metadata file
+# import metadata file into dataframe
 
-# iterate through the metadata dataframe to check if programs and outputs exist
-   
+# iterate through the metadata dataframe to check if programs and outputs exist 
    
 # create lists of programs and outputs in the respective directory but not in the metadata file
 
-# create boolean variables
+# create boolean to trigger text output for programs not in directory check
+
+# create boolean to trigger text output for outputs not in directory check
+
+# create boolean to trigger text output for programs not in metadata check
+
+# create boolean to trigger text output for outputs not in metadata check
 
 ```
 <!-- end breakout two -->
 
 <!-- begin breakout three -->
 ## Program File Check
-The programs in the metadata document were checked against the programs folder, results are as follows: 
+The programs in the metadata document were checked against the programs folder, results are as follows:  
+
 ```{r badprograms}
+# nicely write out the names of programs that are in the metadata but not directory
 
 ```  
 
 
 ```{r badprogrammeta}
+# nicely write out the names of programs that are in the directory but not metadata
 
 ```
 
 ## Output File Check
 The output files in the metadata document were checked against the outputs folder, results are as follows:  
 
-```{r badoutputs}
 
+```{r badoutputs}
+# nicely write out the names of outputs that are in the metadata but not directory
 ```  
 
+
 ```{r badoutputmeta}
+# nicely write out the names of outputs that are in the directory but not metadata
 
 ```
 <!-- end breakout three -->
@@ -84,9 +103,9 @@ The output files in the metadata document were checked against the outputs folde
 # Output Contents Checks
 The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
 ```{python outputsourcecheck}
-# iterate through the metadata dataframe to check output file contents
+# iterate through the metadata dataframe to check the content of output files 
    
-# dataframe of all output files both in metadata and directory
+# create dataframe of all output files both in metadata and directory
 
 # create boolean to trigger text output for output source check
 
@@ -94,6 +113,7 @@ The text of the output files present in both the metadata document and outputs f
 ## Sources
 
 ```{r badsources}
+# nicely write out the names of program and output pairs where the source is wrong
 
 ``` 
 <!-- end breakout four -->
