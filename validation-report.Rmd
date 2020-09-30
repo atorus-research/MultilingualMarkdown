@@ -2,17 +2,19 @@
 title: "Validation Report"
 output: pdf_document
 ---
+<!-- begin breakout one -->
 ```{r rsetup, include=FALSE}
-# import needed packages, these stay imported in future chunks
+# import needed R packages, these stay imported in future chunks
 library(tidyverse)
 library(magrittr)
 library(knitr)
 library(kableExtra)
 library(reticulate)
+# set up Python for reticulate
 reticulate::use_python("~/miniconda/bin")
 ```
 ```{python pysetup, include=FALSE}
-# import needed packages, these stay imported in future chunks
+# import needed python packages, these stay imported in future chunks
 import os
 import re
 import pandas as pd
@@ -34,9 +36,6 @@ wd = os.getcwd()
 progdir = os.path.join(wd, "programs")
 outputdir = os.path.join(wd, "outputs")
 metadir = os.path.join(wd, "metadata")
-# get contents of desired directories
-proglist = os.listdir(progdir)
-ouputlist = os.listdir(outputdir)
 ```
 
 # Directory Outline
@@ -50,8 +49,12 @@ The output files are located in the following folder:
 **`r py$outputdir`**
 <!-- end breakout one -->
 
+<!-- begin breakout two -->
 # File Checks
 ```{python filechecks, echo=FALSE}
+# get contents of desired directories
+proglist = os.listdir(progdir)
+ouputlist = os.listdir(outputdir)
 # get metadata file
 metacsv = os.path.join(metadir,"metadata.csv")
 metadf = pd.read_csv(metacsv)
@@ -83,6 +86,7 @@ outputsmetaallgood = (len(outputsindirnotmeta) == 0)
 ```
 <!-- end breakout two -->
 
+<!-- begin breakout three -->
 ## Program File Check
 The programs in the metadata document were checked against the programs folder, results are as follows:  
 `r if(py$programsallgood){"**All programs present in the metadata document are present in the programs folder.**"}`
@@ -117,6 +121,7 @@ kable(py$outputsindirnotmeta, col.names="OutputName", booktabs = T) %>%
 ```
 <!-- end breakout three -->
 
+<!-- begin breakout four -->
 # Output Contents Checks
 The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
 ```{python outputsourcecheck, echo=FALSE}

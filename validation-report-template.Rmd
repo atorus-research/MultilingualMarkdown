@@ -2,12 +2,15 @@
 title: "Validation Report"
 output: pdf_document
 ---
+<!-- begin breakout one -->
 ```{r rsetup, include=FALSE}
-# import needed packages, these stay imported in future chunks
+# import needed R packages, these stay imported in future chunks
+
+# set up Python for reticulate
 
 ```
 ```{python pysetup, include=FALSE}
-# import needed packages, these stay imported in future chunks
+# import needed python packages, these stay imported in future chunks
 
 ```
 ```{r usercheck, include=FALSE}
@@ -22,7 +25,6 @@ This is a validation report for the CDISC Replication Pilot Project.  The direct
 ```{python directorychecks}
 # set up directory and file paths
 
-# get contents of desired directories
 
 ```
 
@@ -37,8 +39,11 @@ The output files are located in the following folder:
 
 <!-- end breakout one -->
 
+<!-- begin breakout two -->
 # File Checks
 ```{python filechecks}
+# get contents of desired directories
+
 # get metadata file
 
 # iterate through the metadata dataframe to check if programs and outputs exist
@@ -51,6 +56,7 @@ The output files are located in the following folder:
 ```
 <!-- end breakout two -->
 
+<!-- begin breakout three -->
 ## Program File Check
 The programs in the metadata document were checked against the programs folder, results are as follows: 
 ```{r badprograms}
@@ -74,6 +80,7 @@ The output files in the metadata document were checked against the outputs folde
 ```
 <!-- end breakout three -->
 
+<!-- begin breakout four -->
 # Output Contents Checks
 The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
 ```{python outputsourcecheck}
