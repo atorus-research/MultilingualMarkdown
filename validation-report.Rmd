@@ -18,6 +18,7 @@ import re
 import pandas as pd
 ```
 ```{r usercheck, include=FALSE}
+# get system information
 currentdate <- format(Sys.time(), "%Y-%m-%d")
 currenttime <- format(Sys.time(), "%H:%M:%S")
 currentuser <- Sys.getenv("USER")
@@ -47,7 +48,7 @@ The program files are located in the following folder:
 
 The output files are located in the following folder:  
 **`r py$outputdir`**
-<!-- breakout one -->
+<!-- end breakout one -->
 
 # File Checks
 ```{python filechecks, echo=FALSE}
@@ -72,15 +73,15 @@ progsindirnotmeta = [file for file in proglist if file not in metadf.ProgramName
 outputsindirnotmeta = [file for file in ouputlist if file not in metadf.OutputName.tolist() and re.search(".rtf", file)]
 
 # create boolean to trigger text output for programs not in directory check
-programsallgood = (len(metadf['ProgramExists'].unique().tolist()) == 1 and metadf['ProgramExists'].unique().tolist() == [True])
+programsallgood = all(metadf.ProgramExists)
 # create boolean to trigger text output for outputs not in directory check
-outputsallgood = (len(metadf['OutputExists'].unique().tolist()) == 1 and metadf['OutputExists'].unique().tolist() == [True])
+outputsallgood = all(metadf.OutputExists)
 # create boolean to trigger text output for programs not in metadata check
 programsmetaallgood = (len(progsindirnotmeta) == 0)
 # create boolean to trigger text output for outputs not in metadata check
 outputsmetaallgood = (len(outputsindirnotmeta) == 0)
 ```
-<!-- breakout two -->
+<!-- end breakout two -->
 
 ## Program File Check
 The programs in the metadata document were checked against the programs folder, results are as follows:  
@@ -114,7 +115,7 @@ kable(select(filter(py$metadf, OutputExists != T), OutputName), booktabs = T) %>
 kable(py$outputsindirnotmeta, col.names="OutputName", booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
 ```
-<!-- breakout three -->
+<!-- end breakout three -->
 
 # Output Contents Checks
 The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
@@ -123,16 +124,13 @@ The text of the output files present in both the metadata document and outputs f
 for index, row in metadf.iterrows():
    output = os.path.join(outputdir, row.OutputName)
       
-   # check the output files for title and source elements and create boolean variables
+   # check the output files for source element and create boolean variable
    title = row.OutputTitle
    source = "programs/" + row.ProgramName
    if row.OutputExists == True:
       with open(output, 'r') as file:
          filetext = str(file.read())
-         if  re.search(source, filetext):
-            sourcecheck = True
-         else:
-            sourcecheck = False
+         sourcecheck = bool(re.search(source, filetext))
    # else loop to informatively fill in variables for when the output file doesn't exist
    else:
       sourcecheck = "Output does not exist"
@@ -143,7 +141,7 @@ for index, row in metadf.iterrows():
 # dataframe of all output files both in metadata and directory
 goodoutput = metadf[metadf.OutputExists == True]
 # create boolean to trigger text output for output source check
-sourcesallgood = (len(metadf['SourceCorrect'].unique().tolist()) == 1 and metadf['SourceCorrect'].unique().tolist() == [True])
+sourcesallgood = all(metadf['SourceCorrect'])
 ```
 ## Sources
 `r if(py$sourcesallgood){"**All sources in the outputs match those in the metadata document.**"}`
@@ -152,4 +150,4 @@ sourcesallgood = (len(metadf['SourceCorrect'].unique().tolist()) == 1 and metadf
 kable(select(filter(py$goodoutput, SourceCorrect != T), OutputName, ProgramName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
 ``` 
-<!-- breakout four -->
+<!-- end breakout four -->
