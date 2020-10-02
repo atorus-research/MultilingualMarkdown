@@ -92,7 +92,7 @@ outputsmetaallgood =
 The programs in the metadata document were checked against the programs folder, results are as follows:  
 `r if(py$programsallgood){"**All programs present in the metadata document are present in the programs folder.**"}`
 `r if( ){"**Some programs present in the metadata document are not present in the programs folder.**  The programs listed below are not present in the programs folder."}`
-```{r badprograms, echo=FALSE, eval=!py$programsallgood, results='asis'}
+```{r badprograms, echo=FALSE, eval=!py$programsallgood}
 # nicely write out the names of programs that are in the metadata but not directory
 kable(select(filter(py$metadf, ProgramExists != T), ProgramName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -100,7 +100,7 @@ kable(select(filter(py$metadf, ProgramExists != T), ProgramName), booktabs = T) 
 
 `r if( ){"**All programs present in the programs folder are present in the metadata document.**"}`
 `r if( ){"**Some programs present in the programs folder are not present in the metadata document.**  The programs listed below are not present in the metadata document."}`
-```{r badprogrammeta, echo=FALSE, eval=, results=}
+```{r badprogrammeta, echo=FALSE, eval=}
 # nicely write out the names of programs that are in the directory but not metadata
 kable(py$progsindirnotmeta, col.names="ProgramName", booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -111,7 +111,7 @@ The output files in the metadata document were checked against the outputs folde
 
 `r if( ){"**All outputs present in the metadata document are present in the outputs folder.**"}`
 `r if( ){"**Some outputs present in the metadata document are not present in the outputs folder.**  The outputs listed below are not present in the outputs folder."}`
-```{r badoutputs, echo= , eval= , results= }
+```{r badoutputs, echo= , eval= }
 # nicely write out the names of outputs that are in the metadata but not directory
 kable(, booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")

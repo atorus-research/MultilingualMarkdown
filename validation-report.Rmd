@@ -92,7 +92,7 @@ outputsmetaallgood = (len(outputsindirnotmeta) == 0)
 The programs in the metadata document were checked against the programs folder, results are as follows:  
 `r if(py$programsallgood){"**All programs present in the metadata document are present in the programs folder.**"}`
 `r if(!py$programsallgood){"**Some programs present in the metadata document are not present in the programs folder.**  The programs listed below are not present in the programs folder."}`
-```{r badprograms, echo=FALSE, eval=!py$programsallgood, results='asis'}
+```{r badprograms, echo=FALSE, eval=!py$programsallgood}
 # nicely write out the names of programs that are in the metadata but not directory
 kable(select(filter(py$metadf, ProgramExists != T), ProgramName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -100,7 +100,7 @@ kable(select(filter(py$metadf, ProgramExists != T), ProgramName), booktabs = T) 
 
 `r if(py$programsmetaallgood){"**All programs present in the programs folder are present in the metadata document.**"}`
 `r if(!py$programsmetaallgood){"**Some programs present in the programs folder are not present in the metadata document.**  The programs listed below are not present in the metadata document."}`
-```{r badprogrammeta, echo=FALSE, eval=!py$programsmetaallgood, results='asis'}
+```{r badprogrammeta, echo=FALSE, eval=!py$programsmetaallgood}
 # nicely write out the names of programs that are in the directory but not metadata
 kable(py$progsindirnotmeta, col.names="ProgramName", booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -111,7 +111,7 @@ The output files in the metadata document were checked against the outputs folde
 
 `r if(py$outputsallgood){"**All outputs present in the metadata document are present in the outputs folder.**"}`
 `r if(!py$outputsallgood){"**Some outputs present in the metadata document are not present in the outputs folder.**  The outputs listed below are not present in the outputs folder."}`
-```{r badoutputs, echo=FALSE, eval=!py$outputsallgood, results='asis'}
+```{r badoutputs, echo=FALSE, eval=!py$outputsallgood}
 # nicely write out the names of outputs that are in the metadata but not directory
 kable(select(filter(py$metadf, OutputExists != T), OutputName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -119,7 +119,7 @@ kable(select(filter(py$metadf, OutputExists != T), OutputName), booktabs = T) %>
 
 `r if(py$outputsmetaallgood){"**All outputs present in the outputs folder are present in the metadata document.**"}`
 `r if(!py$outputsmetaallgood){"**Some outputs present in the outputs folder are not present in the metadata document.**  The outputs listed below are not present in the metadata document."}`
-```{r badoutputmeta, echo=FALSE, eval=!py$outputsmetaallgood, results='asis'}
+```{r badoutputmeta, echo=FALSE, eval=!py$outputsmetaallgood}
 # nicely write out the names of outputs that are in the directory but not metadata
 kable(py$outputsindirnotmeta, col.names="OutputName", booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
@@ -156,7 +156,7 @@ sourcesallgood = all(metadf['SourceCorrect'])
 ## Sources
 `r if(py$sourcesallgood){"**All sources in the outputs match those in the metadata document.**"}`
 `r if(!py$sourcesallgood){"**Some sources in the outputs do not match those in the metadata document.**  The outputs and sources listed below do not match the values in the metadata document."}`
-```{r badsources, echo=FALSE, eval=!py$sourcesallgood, results='asis'}
+```{r badsources, echo=FALSE, eval=!py$sourcesallgood}
 # nicely write out the names of program and output pairs where the source is wrong
 kable(select(filter(py$goodoutput, SourceCorrect != T), OutputName, ProgramName), booktabs = T) %>%
    kable_styling(latex_options = "striped", position = "left")
