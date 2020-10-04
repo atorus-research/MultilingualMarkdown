@@ -2,6 +2,14 @@
 title: "Validation Report"
 output: pdf_document
 ---
+
+<!-- README                                                                             -->
+<!-- This is the blank template file. We've provided minimal amounts of code and        -->
+<!-- only comments to help you through. Use this file if you'd like to do everything    -->
+<!-- from scratch - or really, do what you want! If you're new to Python and don't know -->
+<!-- where to start, we recommend the validation-report-guided.Rmd file.                -->
+<!-- Be sure to look for parts of this file  that state <your code here> and complete   -->
+<!-- those sections, but otherwise this document is largely independent.                -->
 ```{r rsetup, include=FALSE}
 # import needed R packages, these stay imported in future chunks
 library(tidyverse)
@@ -9,109 +17,183 @@ library(magrittr)
 library(knitr)
 library(kableExtra)
 library(reticulate)
-# set up Python for reticulate
+# Set up Python for reticulate
+# This path is using the miniconda installation, which is located
+# inside of the home directory based on how the setup script installed it
 reticulate::use_python("~/miniconda/bin")
 ```
 ```{python pysetup, include=FALSE}
-# import needed python packages, these stay imported in future chunks
+# Import needed python packages, these stay imported in future chunks
+# This only has to be done once for the life of your session
+# The Python session stays alive between blocks of code
 import os
 import re
 import pandas as pd
 ```
 
-<!-- begin breakout one -->
-```{r usercheck}
-# get system information (user, date, time)
+<!-- begin breakout one                                                                       -->
+<!-- Goals:                                                                                   -->
+<!--  - Report the run date/time and user (R or Python - your preference)                     -->
+<!--  - Store the absolute paths to the programs, outputs, and metadata directories in Python -->
+<!--  - Report each of these paths inline in bold markdown text                               -->
+```{r usercheck, echo=FALSE}
+# get system information (user, date, time). If you want, switch this block to Python
 
 ```
-This report was run by user  on  at 
+
+<!-- Report the user, date, and time -->
+This report was run by user <your code here> on <your code here> at <your code here>
 
 # Report Synopsis
 This is a validation report for the CDISC Replication Pilot Project.  The directory of the project is laid out as seen below.  These folders are where the different files for this project are held.  In addition, there are checks in place for the files used in the project to check consistency and completeness.
 
-```{python directorychecks}
+```{python directorychecks, echo=FALSE}
 # get current working directory
 
-# create paths to the subdirectories containing programs, outputs, and metadata 
+# create paths to the sub directories containing programs, outputs, and metadata 
 
 ```
 
 # Directory Outline
-The metadata files are located in the following folder:  
 
+<!-- Python variables are accessible inside the `py` variable in your R session -->
+The metadata files are located in the following folder:  
+<your code here>
 
 The program files are located in the following folder: 
-
+<your code here>
 
 The output files are located in the following folder:  
+<your code here>
 
 <!-- end breakout one -->
 
 <!-- begin breakout two -->
+<!-- Goals:                                                                               -->
+<!--  - Gather names of files in the programs and outputs folders                         -->
+<!--  - Read in the metadata file metadata/metadata.csv. Review this file and familiarize -->
+<!--    yourself with the contents                                                        -->
+<!--  - Bidirectionally check the metadata and directories for programs and outputs       -->
+<!--  - Create Boolean variables for                                                      -->
+<!--    - Any programs missing?                                                           -->
+<!--    - Programs in folder not in metadata?                                             -->
+<!--    - Any outputs missing?                                                            -->
+<!--    - Outputs in folder not in metadata?                                              -->
+<!--                       Use one Python code block to do all of this                    -->
+
 # File Checks
-```{python filechecks}
-# get contents of programs and outputs subdirectories
+```{python filechecks, echo=FALSE}
 
-# import metadata file into dataframe
+# Import metadata file into data frame
 
-# iterate through the metadata dataframe to check if programs and outputs exist 
-   
-# create lists of programs and outputs in the respective directory but not in the metadata file
+# Iterate through the metadata data frame to check if programs and outputs exist 
 
-# create boolean to trigger text output for programs not in directory check
+# Get contents of programs and outputs sub directories
 
-# create boolean to trigger text output for outputs not in directory check
+# Create lists of programs and outputs in the respective directory but not in the metadata file
 
-# create boolean to trigger text output for programs not in metadata check
+# Create a True/False variable to indicate if all programs in the metadata exist
 
-# create boolean to trigger text output for outputs not in metadata check
+# Create a True/False variable to indicate if all outputs in the metadata exist
+
+# Create a True/False variable to indicate if there are programs in the directory not in the metadata
+
+# Create a True/False variable to indicate if there are outputs in the directory not in the metadata
 
 ```
 <!-- end breakout two -->
 
 <!-- begin breakout three -->
-## Program File Check
-The programs in the metadata document were checked against the programs folder, results are as follows:  
+<!-- - Use the 4 variables created earlier to output conditional markdown text
+<!--   - Some/No programs missing
+<!--   - Some/No programs present in folder not in metadata
+<!--   - Some/No outputs missing
+<!--   - Some/No outputs present in folder not in metadata
+<!-- - Create code blocks to output the detailed issues in a nicely presented table -->
 
-```{r badprograms}
-# nicely write out the names of programs that are in the metadata but not directory
+## Program File Check
+
+The programs in the metadata document were checked against the programs folder, results are as follows:  
+<!-- Use inline R code to write different text depending on whether the programs -->
+<!-- were missing from the metadata document                                     -->
+<your code here>
+
+<!-- Display this table only if programs are in the metadata but not directory --> 
+<!-- Note in eval option in the code block below - you can use variables in your session -->
+<!-- to control if the block is evaluated or not. Here, we can control whether or not a  -->
+<!-- table is written.                                                                   -->
+```{r badprograms, echo=FALSE, eval=<your code here>}
+# Nicely write out the names of programs that are in the metadata but not directory
 
 ```  
 
+<!-- Same idea as above, but now we're reporting programs in the folder that weren't in the metadata -->
+<your code here>
 
-```{r badprogrammeta}
-# nicely write out the names of programs that are in the directory but not metadata
+<!-- Display this table only if programs are in the directory but not metadata --> 
+<!-- Set the eval option in the block below -->
+```{r badprogrammeta, echo=FALSE, eval=<your code here>}
+# Nicely write out the names of programs that are in the directory but not metadata
 
 ```
 
 ## Output File Check
+
+<!-- The lines below repeat all of the same checks, but now for the outputs folder -->
 The output files in the metadata document were checked against the outputs folder, results are as follows:  
 
+<!-- Use inline R code to write different text depending on whether the outputs  -->
+<!-- were missing from the metadata document                                     -->
+<your code here>
 
-```{r badoutputs}
-# nicely write out the names of outputs that are in the metadata but not directory
+<!-- Display this table only if outputs are in the metadata but not directory --> 
+```{r badoutputs, echo=FALSE, eval=<your code here>}
+# Nicely write out the names of outputs that are in the metadata but not directory
+
 ```  
 
+<!-- Same idea as above, but now we're reporting outputs in the folder that weren't in the metadata -->
+<your code here>
 
-```{r badoutputmeta}
-# nicely write out the names of outputs that are in the directory but not metadata
+<!-- Display this table only if outputs are in the directory but not metadata --> 
+```{r badoutputmeta, echo=FALSE, eval=<your code here>}
+# Nicely write out the names of outputs that are in the directory but not metadata
 
 ```
+
 <!-- end breakout three -->
 
 <!-- begin breakout four -->
-# Output Contents Checks
-The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
-```{python outputsourcecheck}
-# iterate through the metadata dataframe to check the content of output files 
-   
-# create dataframe of all output files both in metadata and directory
+<!-- - Pass over the metadata data set from before and check if the source file name is in the output file                  -->
+<!-- - Create a new data frame of just records where the output is in both the metadata and the outputs directory           -->
+<!-- - Create a variables that's True if all the source file names are in their outputs, and false if not                   -->
+<!-- - Create a section that dynamically tells us if something is wrong and outputs issues in a nicely presented data frame -->
 
-# create boolean to trigger text output for output source check
+# Output Contents Checks
+
+The text of the output files present in both the metadata document and outputs folder were checked for consistency with the source program files provided.
+
+<!-- In this block, we're checking the output RTF document to look for a line containing the   -->
+<!-- program name that should have created this output document. This is a quick and dirty way -->
+<!-- to check if there was a footnote the contained the executing program name.                -->
+```{python outputsourcecheck, echo=FALSE}
+# Iterate through the metadata data frame to check the content of output files 
+
+# Check each output file to see if it contains the program name (within the programs folder)
+# associated with the output in the metadata file. Note - only check for the path program/<filename>
+# as these outputs were not created on this system.
+   
+# Create a dataframe of all output files both in the metadata and the directory
+
+# Create a True/False variable that we'll use to trigger text output depending on if the sources were correct
 
 ```
 ## Sources
 
+<!-- Similar to before, we're writing different text based on whether or not there were any problems with the sources -->
+<your code here>
+
+<!-- Display a table of outputs with issues in the source footnotes based on the dataframe created above -->
 ```{r badsources}
 # nicely write out the names of program and output pairs where the source is wrong
 
