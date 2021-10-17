@@ -133,7 +133,7 @@ ouputlist = <your code here>
 # List comprehensions are similar to lapply in R, in that they return a list object.
 # They're written like for loops. Here we're returning a list of files in the list variable
 # proglist if the file is NOT in the metadf column ProgramName, and if they're .R files.
-progsindirnotmeta = [file for file in proglist if file not in metadf.ProgramName and re.search(".R", file)]
+progsindirnotmeta = [file for file in proglist if file not in metadf.ProgramName.tolist() and re.search(".R", file)]
 
 # And we'll do the same thing for the output files
 # This should look very similar to the line above
