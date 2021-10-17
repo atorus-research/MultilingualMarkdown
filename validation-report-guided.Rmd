@@ -104,7 +104,7 @@ metadf = pd.read_csv(metacsv)
 # iterate through the metadata data frame to check if programs and outputs exist 
 # Remember to review the metadata data frame to familiarize yourself with the contents
 # iterrows will loop over each row of the data frame. SAS Programmer? This is similar
-# to a data step
+# to a data step. R Programmer? This is similar to dplyr::rowwise()
 for index, row in metadf.iterrows():
 
    # check to see if program exists
@@ -238,7 +238,7 @@ kable(<your code here>, booktabs = T) %>%
 <!-- end breakout three -->
 
 <!-- begin breakout four -->
-<!-- - Pass over the metadata data set from before and check if the source file name is in the output file                  -->
+<!-- - Pass over the metadata data frame from before and check if the source file name is in the output file                  -->
 <!-- - Create a new data frame of just records where the output is in both the metadata and the outputs directory           -->
 <!-- - Create a variables that's True if all the source file names are in their outputs, and false if not                   -->
 <!-- - Create a section that dynamically tells us if something is wrong and outputs issues in a nicely presented data frame -->
