@@ -39,4 +39,4 @@ system('bash ./setup.sh')
 # Set up Python for reticulate
 # This path is using the miniconda installation, which is located
 # inside of the home directory based on how the setup script installed it
-reticulate::use_python("~/miniconda/bin", required = TRUE)
+reticulate::use_python("~/miniconda/bin/python3", required = TRUE)
